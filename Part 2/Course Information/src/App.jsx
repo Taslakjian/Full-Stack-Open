@@ -22,8 +22,6 @@ const Part = (props) => {
 const Content = (props) => {
   const { parts } = props;
 
-  console.log(parts);
-
   return (
     <div>
       {
@@ -59,11 +57,6 @@ const App = () => {
           exercises: 14,
           id: 3
         },
-        {
-          name: 'State of a component',
-          exercises: 14,
-          id: 3
-        }
       ]
     };
 
