@@ -1,7 +1,5 @@
 const Course = (props) => {
   const { course } = props;
-
-  console.log("Course:", course);
   
   return (
     <>
@@ -56,7 +54,7 @@ const App = () => {
           name: 'State of a component',
           exercises: 14,
           id: 3
-        },
+        }
       ]
     };
 
