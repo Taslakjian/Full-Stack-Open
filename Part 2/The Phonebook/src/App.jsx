@@ -46,29 +46,36 @@ const App = () => {
 
   const addPerson = (event) => {
     event.preventDefault();
-    let isIncluded = false;
 
-    persons.forEach((person) => {
-      if (person.name === newName) {
-        alert(`${newName} is already added to phonebook`);
-        isIncluded = true;
-      } 
-    });
+    const newPerson = {
+      name: newName,
+      number: newNumber
+    };
 
-    if (!isIncluded) {
-      const newPerson = {
-        name: newName,
-        number: newNumber
-      };
+    const exactMatch = persons.find((person) => person.name === newName && person.number === newNumber);
+    const nameMatch = persons.find((person) => person.name === newName && person.number !== newNumber);
 
-      numbers
-        .create(newPerson)
-        .then((response) => {
-          const person = response.data;
-          setPersons(persons.concat(person));
-          setNewName("");
-          setNewNumber("");
-        });
+    if (exactMatch) {
+      alert(`${newName} is already added to phonebook`);
+    } else if (nameMatch) {
+        const isConfirmed = confirm(`${nameMatch.name} is already added to phonebook, replace the old number with a new one?`);
+        const updatedPerson = { ...nameMatch, number: newNumber };
+
+        if (isConfirmed) {
+          numbers
+            .update(updatedPerson)
+            .then(response => {
+              setPersons(persons.map((person) => person.id === response.data.id ? updatedPerson : person ));
+            });
+        }
+    } else {
+        numbers
+          .create(newPerson)
+          .then((response) => {
+            setPersons(persons.concat(response.data));
+            setNewName("");
+            setNewNumber("");
+          });
     }
   };
 
