@@ -31,6 +31,19 @@ const App = () => {
     setList(persons.filter((person) => person.name.toLowerCase().includes(newFilter.toLowerCase())));
   };
 
+  const handleDelete = (person) => {
+    const isConfirmed = confirm(`Delete ${person.name}`);
+
+    if (isConfirmed) {
+      numbers
+      .deletePerson(person)
+      .then(response => {
+        const removedPerson = response.data;
+        setPersons(persons.filter((person) => person.id != removedPerson.id));
+      });
+    }
+  };
+
   const addPerson = (event) => {
     event.preventDefault();
     let isIncluded = false;
@@ -74,8 +87,26 @@ const App = () => {
       <h2>Numbers</h2>
       {
         filter === "" 
-        ? persons.map((person) => <Person key={person.name} name={person.name} number={person.number} />)
-        : list.map((person) => <Person key={person.name} name={person.name} number={person.number} />)
+        ? persons.map((person) => {
+            return (
+              <Person
+                key={person.id} 
+                name={person.name} 
+                number={person.number}
+                handleDelete={() => handleDelete(person)}
+              />
+            )
+        })
+        : list.map((person) => {
+            return (
+              <Person
+                key={person.id} 
+                name={person.name} 
+                number={person.number}
+                handleDelete={() => handleDelete(person)}
+              />
+           )
+        })
       }
     </div>
   )

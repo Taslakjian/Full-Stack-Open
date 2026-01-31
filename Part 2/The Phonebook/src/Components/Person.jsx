@@ -1,6 +1,11 @@
 const Person = (props) => {
-    const { name, number } = props;
-    return <p>{name} {number}</p>
+    const { name, number, handleDelete } = props;
+    return (
+        <p>
+            {name} {number}
+            <button onClick={handleDelete}>delete</button>
+        </p>
+    )
 };
 
 export default Person;
