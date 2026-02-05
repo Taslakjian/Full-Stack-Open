@@ -12,6 +12,7 @@ const App = () => {
   const [filter, setFilter] = useState("");
   const [list, setList] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
+  const [success, setSuccess] = useState(false);
 
   useEffect(() => {
     numbers
@@ -43,6 +44,7 @@ const App = () => {
         const removedPerson = response.data;
         setPersons(persons.filter((person) => person.id != removedPerson.id));
         setErrorMessage(`Deleted ${removedPerson.name}.`);
+        setSuccess(true);
         setTimeout(() => setErrorMessage(""), 4500);
       });
     }
@@ -69,8 +71,14 @@ const App = () => {
           numbers
             .update(updatedPerson)
             .then(response => {
-              setPersons(persons.map((person) => person.id === response.data.id ? updatedPerson : person ));
-              setErrorMessage(`Updated ${response.data.name}.`);
+              setPersons(persons.map((person) => person.id === updatedPerson.id ? updatedPerson : person ));
+              setErrorMessage(`Updated ${updatedPerson.name}.`);
+              setSuccess(true);
+              setTimeout(() => setErrorMessage(""), 4500);
+            })
+            .catch((error) => {
+              setErrorMessage(`Information of ${updatedPerson.name} has already been removed from server.`);
+              setSuccess(false);
               setTimeout(() => setErrorMessage(""), 4500);
             });
         }
@@ -82,6 +90,7 @@ const App = () => {
             setNewName("");
             setNewNumber("");
             setErrorMessage(`Added ${response.data.name}.`);
+            setSuccess(true);
             setTimeout(() => setErrorMessage(""), 4500);
           });
     }
@@ -90,7 +99,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={errorMessage} />
+      <Notification message={errorMessage} type={success} />
       <Filter filter={filter} handleFilter={handleFilter} />
       <h2>add a new</h2>
       <Form

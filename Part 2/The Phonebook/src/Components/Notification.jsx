@@ -1,8 +1,8 @@
 const Notification = (props) => {
-    const { message } = props;
+    const { message, type } = props;
 
     const successMessage = {
-        color: "green",
+        color: type ? "green" : "red",
         background: "lightgrey",
         fontSize: 20,
         borderStyle: "solid",
