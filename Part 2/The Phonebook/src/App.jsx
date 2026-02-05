@@ -3,6 +3,7 @@ import Filter from './Components/Filter';
 import Form from './Components/Form';
 import Person from './Components/Person';
 import numbers from "./services/numbers";
+import Notification from './Components/Notification';
 
 const App = () => {
   const [persons, setPersons] = useState([]); 
@@ -10,6 +11,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState("");
   const [filter, setFilter] = useState("");
   const [list, setList] = useState([]);
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     numbers
@@ -40,6 +42,8 @@ const App = () => {
       .then(response => {
         const removedPerson = response.data;
         setPersons(persons.filter((person) => person.id != removedPerson.id));
+        setErrorMessage(`Deleted ${removedPerson.name}.`);
+        setTimeout(() => setErrorMessage(""), 4500);
       });
     }
   };
@@ -66,6 +70,8 @@ const App = () => {
             .update(updatedPerson)
             .then(response => {
               setPersons(persons.map((person) => person.id === response.data.id ? updatedPerson : person ));
+              setErrorMessage(`Updated ${response.data.name}.`);
+              setTimeout(() => setErrorMessage(""), 4500);
             });
         }
     } else {
@@ -75,6 +81,8 @@ const App = () => {
             setPersons(persons.concat(response.data));
             setNewName("");
             setNewNumber("");
+            setErrorMessage(`Added ${response.data.name}.`);
+            setTimeout(() => setErrorMessage(""), 4500);
           });
     }
   };
@@ -82,6 +90,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={errorMessage} />
       <Filter filter={filter} handleFilter={handleFilter} />
       <h2>add a new</h2>
       <Form
