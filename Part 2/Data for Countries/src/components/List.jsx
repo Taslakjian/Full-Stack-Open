@@ -1,5 +1,7 @@
+import Country from "./Country";
+
 const List = (props) => {
-    const { country, displayedCountries } = props;
+    const { country, displayedCountries, handleClick } = props;
 
     if (!country) {
         return null;
@@ -10,7 +12,15 @@ const List = (props) => {
     return (
         <>
             {
-               displayedCountries.map((country) => <p key={country}>{country}</p>) 
+               displayedCountries.map((country) => {
+                return (
+                    <Country 
+                        key={country} 
+                        country={country}
+                        handleClick={handleClick} 
+                    />
+                )
+               }) 
             }
         </>
     )
