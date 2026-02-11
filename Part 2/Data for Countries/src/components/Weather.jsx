@@ -1,15 +1,14 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import weatherSearch from "../services/weatherSearch";
 
 const Weather = (props) => {
     const { capital, capitalWeather } = props;
-    const api_key = import.meta.env.VITE_API_KEY;
 
     const [imageSrc, setImageSrc] = useState("");
 
     useEffect(() => {
-        axios
-            .get(`https://api.openweathermap.org/data/2.5/weather?q=${capital}&appid=${api_key}`)
+        weatherSearch
+            .getWeatherIcon(capital)
             .then((response) => {
                 setImageSrc(`https://openweathermap.org/payload/api/media/file/${response.data.weather[0].icon}.png`);                
             });

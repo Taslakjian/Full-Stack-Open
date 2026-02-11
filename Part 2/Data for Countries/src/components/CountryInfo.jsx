@@ -1,6 +1,6 @@
-import axios from "axios";
 import { useState, useEffect } from "react";
 import Weather from "./Weather";
+import weatherSearch from "../services/weatherSearch";
 
 const CountryInfo = (props) => {
     if (!props.chosenCountry) {
@@ -13,11 +13,10 @@ const CountryInfo = (props) => {
     const { name, capital, area, languages, flags, capitalInfo } = chosenCountry;
     const iterableLanguages = Object.values(languages);
     const [latitude, longitude] = capitalInfo.latlng;
-    const api_key = import.meta.env.VITE_API_KEY;
 
     useEffect(() => {
-        axios
-            .get(`https://api.openweathermap.org/data/3.0/onecall?lat=${latitude}&lon=${longitude}&appid=${api_key}&units=metric`)
+        weatherSearch
+            .getCapitalWeather(latitude, longitude)
             .then(response => {
                 const data = response.data;
                 setCapitalWeather(data);
