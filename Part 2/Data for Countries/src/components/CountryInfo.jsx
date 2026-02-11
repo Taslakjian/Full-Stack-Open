@@ -1,12 +1,28 @@
+import axios from "axios";
+import { useState, useEffect } from "react";
+import Weather from "./Weather";
+
 const CountryInfo = (props) => {
     if (!props.chosenCountry) {
         return null;
     }
 
-    const { chosenCountry } = props;
-    const { name, capital, area, languages, flags } = chosenCountry;
+    const [capitalWeather, setCapitalWeather] = useState(null);
 
+    const { chosenCountry } = props;
+    const { name, capital, area, languages, flags, capitalInfo } = chosenCountry;
     const iterableLanguages = Object.values(languages);
+    const [latitude, longitude] = capitalInfo.latlng;
+    const api_key = import.meta.env.VITE_API_KEY;
+
+    useEffect(() => {
+        axios
+            .get(`https://api.openweathermap.org/data/3.0/onecall?lat=${latitude}&lon=${longitude}&appid=${api_key}&units=metric`)
+            .then(response => {
+                const data = response.data;
+                setCapitalWeather(data);
+            });
+    }, []);
 
     return (
         <>
@@ -20,6 +36,11 @@ const CountryInfo = (props) => {
                 }
             </ul>
             <img src={flags.png} alt={`Flag of ${name.common}`} />
+            {
+                capitalWeather 
+                ? <Weather capital={capital} capitalWeather={capitalWeather} /> 
+                : null
+            }
         </>
     )
 };
