@@ -48,9 +48,7 @@ app.delete("/api/persons/:id", (request, response) => {
 });
 
 app.post("/api/persons", (request, response) => {
-  const id = Math.floor(Math.random() * 1000000 + 1000000);
   const body = request.body;
-  const samePerson = persons.find((person) => person.name === body.name);
 
   if (!(body.name && body.number)) {
     return response.status(400).json({
@@ -58,20 +56,14 @@ app.post("/api/persons", (request, response) => {
     });
   };
 
-  if (samePerson) {
-    return response.status(400).json({
-      error: "name must be unique"
-    });
-  };
-
-  const person = {
-    id: String(id),
+  const person = new Person({
     name: body.name,
     number: body.number
-  };
+  });
 
-  persons = persons.concat(person);
-  response.json(person);
+  person
+    .save()
+    .then((savedNote) => response.json(savedNote));
 });
 
 const PORT = process.env.PORT || 3001;
