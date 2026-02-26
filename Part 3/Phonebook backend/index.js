@@ -9,9 +9,9 @@ morgan.token("body", (request, response) => {
   return JSON.stringify(request.body);
 });
 
+app.use(express.static("dist"));
 app.use(express.json());
 app.use(morgan(":method :url :status :res[content-length] - :response-time ms :body"));
-app.use(express.static("dist"));
 
 app.get("/api/persons", (request, response) => {
     Person
@@ -40,11 +40,9 @@ app.get("/api/persons/:id", (request, response) => {
 });
 
 app.delete("/api/persons/:id", (request, response) => {
-  const id = request.params.id;
-  const person = persons.find((person) => person.id == id);
-  persons = persons.filter((person) => person.id !== id);
-
-  response.status(200).json(person);
+  Person
+    .findByIdAndDelete(request.params.id)
+    .then(result => response.status(200).json(result))
 });
 
 app.post("/api/persons", (request, response) => {
