@@ -6,7 +6,10 @@ const getAll = () => {
 };
 
 const create = (person) => {
-    return axios.post(baseUrl, person);
+    return (
+        axios
+            .post(baseUrl, person)
+    );
 };
 
 const deletePerson = (person) => {

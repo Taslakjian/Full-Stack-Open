@@ -86,11 +86,16 @@ const App = () => {
         numbers
           .create(newPerson)
           .then((response) => {
+            console.log("Hello");
             setPersons(persons.concat(response.data));
             setNewName("");
             setNewNumber("");
             setErrorMessage(`Added ${response.data.name}.`);
             setSuccess(true);
+            setTimeout(() => setErrorMessage(""), 4500);
+          })
+          .catch(error => {
+            setErrorMessage(`${error.response.data.error}`);
             setTimeout(() => setErrorMessage(""), 4500);
           });
     }
