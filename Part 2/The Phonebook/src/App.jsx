@@ -96,6 +96,7 @@ const App = () => {
           })
           .catch(error => {
             setErrorMessage(`${error.response.data.error}`);
+            setSuccess(false);
             setTimeout(() => setErrorMessage(""), 4500);
           });
     }
