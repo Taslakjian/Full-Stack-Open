@@ -20,12 +20,16 @@ app.get("/api/persons", (request, response) => {
 });
 
 app.get("/info", (request, response) => {
-  response.send(
-    `<div>
-      <p>Phonebook has info for ${persons.length} people</p>
-      <p>${new Date()}</p>
-    </div>`
-  );
+  Person
+      .find({})
+      .then((people) => {
+        response.send(
+          `<div>
+            <p>Phonebook has info for ${people.length}</p>
+            <p>${new Date()}</p>
+          </div>`
+        )
+      });
 });
 
 app.get("/api/persons/:id", (request, response, next) => {
@@ -70,12 +74,34 @@ app.post("/api/persons", (request, response, next) => {
     .catch(error => next(error));
 });
 
+app.put("/api/persons/:id", (request, response, next) => {
+  const id = request.params.id;
+  const body = request.body;
+
+  Person
+    .findById(id)
+    .then((person) => {
+      if(!person) {
+        return response.status(404).end();
+      }
+
+      person.number = body.number;
+
+      person
+        .save()
+        .then(updatedPerson => {
+          response.json(updatedPerson);
+        });
+    })
+    .catch(error => next(error));
+})
+
 const errorHandler = (error, request, response, next) => {
   if (error.name === "CastError") {
     return response.status(400).send({ error: "malformatted id" });
   }
 
-  return response.status(500).send({ error: "An error has occured" });
+  return response.status(500).send({ error: `${error}` });
 };
 
 app.use(errorHandler);
