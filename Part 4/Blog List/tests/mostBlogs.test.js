@@ -143,7 +143,7 @@ describe("most blogs", () => {
         const result = listHelper.mostBlogs(blogsWith2MostBlogs);
         if (result.author === "Edsger W. Dijkstra") {
             assert.deepStrictEqual(result, { author: 'Edsger W. Dijkstra', blogs: 3 });
-        } else if (result.author === "Rober C. Martin") {
+        } else if (result.author === "Robert C. Martin") {
             assert.deepStrictEqual(result, { author: 'Robert C. Martin', blogs: 3 });
         }
     });
