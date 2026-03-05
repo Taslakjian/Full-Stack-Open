@@ -49,4 +49,34 @@ const mostBlogs = (blogs) => {
     return result;
 };
 
-module.exports = { dummy, totalLikes, favoriteBlog, mostBlogs };
+const mostLikes = (blogs) => {
+    const map = new Map();
+
+    blogs.forEach((blog) => {
+        if (map.has(blog.author)) {
+            const likes = map.get(blog.author) + blog.likes;
+            map.set(blog.author, likes);
+        } else {
+            map.set(blog.author, blog.likes);
+        }
+    });
+
+    const mapEntryIterator = map.entries();
+    let highestNumberOfLikes = 0;
+    const result = {};
+
+    for (let i = 0; i < map.size; i++) {
+        const currentEntry = mapEntryIterator.next().value;
+        const [author, numberOfLikes] = currentEntry;
+
+        if (numberOfLikes > highestNumberOfLikes) {
+            highestNumberOfLikes = numberOfLikes;
+            result.author = author;
+            result.likes = numberOfLikes;
+        }
+    }
+
+    return result;
+};
+
+module.exports = { dummy, totalLikes, favoriteBlog, mostBlogs, mostLikes };

@@ -2,7 +2,7 @@ const { test, describe } = require('node:test')
 const assert = require('node:assert')
 const listHelper = require('../utils/list_helper')
 
-describe("most blogs", () => {
+describe("most liked author", () => {
     const listWithOneBlog = [
         {
         _id: '5a422aa71b54a676234d17f8',
@@ -14,13 +14,13 @@ describe("most blogs", () => {
         }
     ];
 
-    test("when list has only one blog, return that author and number of blog set to 1", () => {
-        const result = listHelper.mostBlogs(listWithOneBlog);
-        assert.deepStrictEqual(result, { author: "Edsger W. Dijkstra", blogs: 1 });
+    test("when list has only one blog, return that author and number of likes", () => {
+        const result = listHelper.mostLikes(listWithOneBlog);
+        assert.deepStrictEqual(result, { author: "Edsger W. Dijkstra", likes: 5 });
     });
 
     test("of empty list is empty object", () => {
-        const result = listHelper.mostBlogs([]);
+        const result = listHelper.mostLikes([]);
         assert.deepStrictEqual(result, {});
       });
 
@@ -76,11 +76,11 @@ describe("most blogs", () => {
     ];
 
     test("of a bigger list is calculated right", () => {
-        const result = listHelper.mostBlogs(blogs);
-        assert.deepStrictEqual(result, { author: 'Robert C. Martin', blogs: 3 });
+        const result = listHelper.mostLikes(blogs);
+        assert.deepStrictEqual(result, { author: 'Edsger W. Dijkstra', likes: 17 });
     });
 
-    const blogsWith2MostBlogs = [
+    const blogsWith2MostLikes = [
         {
             _id: "5a422a851b54a676234d17f7",
             title: "React patterns",
@@ -130,21 +130,21 @@ describe("most blogs", () => {
             __v: 0
         },
         {
-            _id: "5a422b3a1b54a676234d17f9",
-            title: "Canonical string reduction",
-            author: "Edsger W. Dijkstra",
-            url: "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html",
-            likes: 12,
+            _id: "5a422ba71b54a676234d17fb",
+            title: "TDD harms architecture",
+            author: "Robert C. Martin",
+            url: "http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html",
+            likes: 5,
             __v: 0
         }
     ];
 
-    test("of a bigger list with 2 most blogs, returns any one of the authors", () => {
-        const result = listHelper.mostBlogs(blogsWith2MostBlogs);
+    test("of a bigger list with 2 most likes, returns any one of the authors", () => {
+        const result = listHelper.mostLikes(blogsWith2MostLikes);
         if (result.author === "Edsger W. Dijkstra") {
-            assert.deepStrictEqual(result, { author: 'Edsger W. Dijkstra', blogs: 3 });
+            assert.deepStrictEqual(result, { author: 'Edsger W. Dijkstra', likes: 17 });
         } else if (result.author === "Rober C. Martin") {
-            assert.deepStrictEqual(result, { author: 'Robert C. Martin', blogs: 3 });
+            assert.deepStrictEqual(result, { author: 'Robert C. Martin', likes: 17 });
         }
     });
 });
