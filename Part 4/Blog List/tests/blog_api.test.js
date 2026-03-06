@@ -34,6 +34,13 @@ test("all blogs are returned", async () => {
     assert.strictEqual(response.body.length, 2);
 });
 
+test("the unique identifier property of the blog posts is named id", async () => {
+    const response = await api.get("/api/blogs");
+    const blog = response.body[0];
+    assert(blog.id);
+    assert(!blog._id)
+});
+
 beforeEach(async () => {
     await Blog.deleteMany({});
     let blogObject = new Blog(initialBlogs[0]);
