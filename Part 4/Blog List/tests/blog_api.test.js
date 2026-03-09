@@ -43,8 +43,8 @@ test("the unique identifier property of the blog posts is named id", async () =>
 
 test("a blog post is successfuly created", async () => {
     const newBlog = {
-        title: "Test blog",
-        author: "Test author",
+        title: "This is a new blog post",
+        author: "author",
         url: "www.test.com",
         likes: 7,
     };
@@ -60,7 +60,23 @@ test("a blog post is successfuly created", async () => {
     const titles = response.body.map(blog => blog.title);
 
     assert.strictEqual(response.body.length, initialBlogs.length + 1);
-    assert(titles.includes("Test blog"));
+    assert(titles.includes("This is a new blog post"));
+});
+
+test("likes is set to 0 if not specified", async () => {
+    const newBlog = {
+        title: "This is a blog post without any likes",
+        author: "author",
+        url: "www.test.com"
+    };
+
+    const response = await api
+                        .post("/api/blogs")
+                        .send(newBlog)
+                        .expect(201)
+                        .expect("Content-Type", /application\/json/);
+
+    assert.strictEqual(response.body.likes, 0);
 });
 
 beforeEach(async () => {
