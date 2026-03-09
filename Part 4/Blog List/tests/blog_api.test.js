@@ -79,6 +79,17 @@ test("likes is set to 0 if not specified", async () => {
     assert.strictEqual(response.body.likes, 0);
 });
 
+test("missing url or title properties in new blog posts send 400 Bad Request", async () => {
+    const newBlog = {
+        author: "Test author"
+    };
+
+    await api
+        .post("/api/blogs")
+        .send(newBlog)
+        .expect(400);
+});
+
 beforeEach(async () => {
     await Blog.deleteMany({});
     let blogObject = new Blog(initialBlogs[0]);
