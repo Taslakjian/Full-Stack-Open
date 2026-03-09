@@ -29,7 +29,7 @@ const initialBlogs = [
 test("all blogs are returned", async () => {
     const response = await api
                             .get("/api/blogs")
-                            .expect("Content-type", /application\/json/);
+                            .expect("Content-Type", /application\/json/);
     
     assert.strictEqual(response.body.length, 2);
 });
@@ -39,6 +39,28 @@ test("the unique identifier property of the blog posts is named id", async () =>
     const blog = response.body[0];
     assert(blog.id);
     assert(!blog._id)
+});
+
+test("a blog post is successfuly created", async () => {
+    const newBlog = {
+        title: "Test blog",
+        author: "Test author",
+        url: "www.test.com",
+        likes: 7,
+    };
+
+    await api
+        .post("/api/blogs")
+        .send(newBlog)
+        .expect(201)
+        .expect("Content-Type", /application\/json/)
+
+    const response = await api.get("/api/blogs");
+
+    const titles = response.body.map(blog => blog.title);
+
+    assert.strictEqual(response.body.length, initialBlogs.length + 1);
+    assert(titles.includes("Test blog"));
 });
 
 beforeEach(async () => {
