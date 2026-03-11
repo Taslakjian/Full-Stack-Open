@@ -85,7 +85,9 @@ describe("when there are initially some notes saved", () => {
             const blogs = await helper.blogsInDB();
             const blogToDelete = blogs[0];
             
-            await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204);
+            await api
+                .delete(`/api/blogs/${blogToDelete.id}`)
+                .expect(204);
 
             const blogsAfterDeletion = await helper.blogsInDB();
             const ids = blogsAfterDeletion.map(blog => blog.id);
@@ -94,6 +96,30 @@ describe("when there are initially some notes saved", () => {
 
             assert.strictEqual(blogsAfterDeletion.length, helper.initialBlogs.length - 1);
         });
+    });
+
+    describe("updating a note", () => {
+        test("updating a note's likes field"), async () => {
+            const newBlog = {
+                title: "React patterns",
+                author: "Michael Chan",
+                url: "https://reactpatterns.com/",
+                likes: 0
+            };
+
+            const blogs = await helper.blogsInDB();
+            const blogToUpdate = blogs[0];
+
+            await api
+                .put(`/api/blogs/${blogToUpdate.id}`)
+                .send(newBlog);
+
+            const blogsAfterUpdate = await helper.blogsInDB();
+            const updatedBlog = blogsAfterUpdate[0];
+
+            assert.notEqual(blogToUpdate.likes, updatedBlog.likes)
+            assert(updatedBlog.likes === 0);
+        };
     });
 });
 
