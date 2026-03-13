@@ -3,8 +3,10 @@ const mongoose = require("mongoose");
 const supertest = require("supertest");
 const app = require("../app.js");
 const Blog = require("../models/blog.js");
+const User = require("../models/user.js");
 const assert = require("node:assert");
 const helper = require("./test_helper.js");
+const bcrypt = require("bcrypt");
 
 const api = supertest(app);
 
@@ -122,6 +124,61 @@ describe("when there are initially some notes saved", () => {
         };
     });
 });
+
+describe("when there is initially one user saved", () => {
+    beforeEach(async () => {
+        await User.deleteMany({});
+
+        const passwordHash = await bcrypt.hash("secret", 10);
+        const rootUser = new User({
+            username: "root",
+            passwordHash
+        });
+
+        await rootUser.save();
+    })
+
+    describe("addition of a user", () => {
+        test("missing or invalid password sends an error response", async () => {
+            const invalidUser = {
+                name: "Test",
+                username: "test"
+            };
+
+            const usersBeforeAddition = await helper.usersInDB();
+
+            const response = await api
+                                .post("/api/users")
+                                .send(invalidUser)
+                                .expect(400);
+
+            const usersAfterAddition = await helper.usersInDB();
+
+            assert.strictEqual(response.body.error, "password must be at least 3 characters");
+            assert.deepStrictEqual(usersBeforeAddition, usersAfterAddition);
+        });
+
+        test("username must be unique", async () => {
+            const rootUser = {
+                username: "root",
+                password: "test",
+                name: "test"
+            };
+
+            const usersBeforeAddition = await helper.usersInDB();
+
+            const response = await api
+                                .post("/api/users")
+                                .send(rootUser)
+                                .expect(400);
+
+            const usersAfterAddition = await helper.usersInDB();
+
+            assert.strictEqual(response.body.error, "username must be unique.");
+            assert.deepStrictEqual(usersBeforeAddition, usersAfterAddition);
+        });
+    });
+})
 
 after(async () => {
     await mongoose.connection.close();
